@@ -1,0 +1,24 @@
+{
+  "apiVersion": "kumo.app/v1",
+  "id": "fixture-image",
+  "version": "1",
+  "publisher": "kumobuild",
+  "name": "Image fixture",
+  "category": "Test fixture",
+  "description": "Test-only image package: traefik/whoami pinned by digest, no source and no resources.",
+  "license": "Apache-2.0",
+  "image": "traefik/whoami:v1.10.3@sha256:43a68d10b9dfcfc3ffbfe4dd42100dc9aeaf29b3a5636c856337a5940f1b4f1c",
+  "settings": {
+    "port": 80,
+    "healthPath": "/health",
+    "volume": {
+      "mountPath": "/data",
+      "uid": 1000,
+      "gid": 1000
+    }
+  },
+  "capabilities": {
+    "branch": "snapshot",
+    "upgrade": "unsupported"
+  }
+}

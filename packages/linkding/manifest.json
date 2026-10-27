@@ -1,0 +1,105 @@
+{
+  "id": "linkding",
+  "version": "2",
+  "name": "Linkding",
+  "category": "Productivity",
+  "description": "Save, organize and search your bookmarks.",
+  "repository": "https://github.com/sissbruecker/linkding",
+  "ref": "27b7303baf41bb28babc610ac8eaa486e1ddfab5",
+  "license": "MIT",
+  "settings": {
+    "dockerfile": "docker/default.Dockerfile",
+    "target": "linkding",
+    "port": 9090,
+    "healthPath": "/health",
+    "volume": {
+      "mountPath": "/etc/linkding/data",
+      "uid": 0,
+      "gid": 0
+    },
+    "runtime": {
+      "memoryMb": 512,
+      "capabilities": [
+        "CHOWN",
+        "SETUID",
+        "SETGID",
+        "DAC_OVERRIDE"
+      ]
+    },
+    "config": {
+      "LD_DB_ENGINE": "postgres",
+      "LD_SUPERVISOR_MANAGED": "True",
+      "LD_SERVER_HOST": "0.0.0.0"
+    },
+    "bindings": {
+      "LD_DB_DATABASE": "database.name",
+      "LD_DB_USER": "database.user",
+      "LD_DB_PASSWORD": "database.password",
+      "LD_DB_HOST": "database.host",
+      "LD_DB_PORT": "database.port",
+      "LD_SERVER_PORT": "application.port"
+    },
+    "development": {
+      "editablePaths": [
+        "bookmarks"
+      ],
+      "protectedPaths": [
+        "bookmarks/migrations",
+        "kumobuild.json",
+        ".github"
+      ]
+    },
+    "resources": {
+      "database": {
+        "type": "postgresql",
+        "branch": "copy",
+        "idleSeconds": 300
+      }
+    }
+  },
+  "apiVersion": "kumo.app/v1",
+  "publisher": "kumobuild",
+  "capabilities": {
+    "branch": "snapshot",
+    "upgrade": "manual"
+  },
+  "connections": [
+    {
+      "protocol": "http",
+      "auth": "token",
+      "tools": [
+        {
+          "name": "bookmarks_list",
+          "description": "List bookmarks in this Linkding instance.",
+          "method": "GET",
+          "path": "/api/bookmarks/",
+          "constants": {
+            "limit": "10"
+          }
+        },
+        {
+          "name": "bookmark_create",
+          "description": "Save one bookmark in this Linkding instance. Requires an explicit write grant.",
+          "method": "POST",
+          "path": "/api/bookmarks/",
+          "parameters": {
+            "url": {
+              "type": "string",
+              "required": true,
+              "maxLength": 2048
+            },
+            "title": {
+              "type": "string",
+              "maxLength": 512
+            },
+            "description": {
+              "type": "string",
+              "maxLength": 2000
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "initialization": "linkding"
+}
